@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let shuffledQuestions, currentQuestionIndex, score, lives, timer, timerInterval;
-    let playerName; // Variable to store player's name
+    let playerName = "keaton" // Variable to store player's name
     let gameEnded = false; // Variable to track if the game has ended
 
     const questions = [
@@ -280,6 +280,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         finalScoreContainer.appendChild(messageElement);
 
         console.log('End game function completed');
+        getHighScores()
     }
 
     async function saveScore(playerName, score) {
@@ -289,28 +290,40 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             .select('*')
             .eq('player_name', playerName);
 
-            if (existingScores.length > 0) {
-                // Username exists, update the score
-                const existingScoreId = existingScores[0].id; // Assuming 'id' is the primary key
-                const { data, error } = await supabase
-                    .from('scores')
-                    .update({ score: score })
-                    .eq('id', existingScoreId);
-            } else {
-                // Username does not exist, insert new score
-                const { data, error } = await supabase
-                    .from('scores')
-                    .insert([{ player_name: playerName, score: score }]);
-            }
+        if (existingScores.length > 0) {
+            // Username exists, update the score
+            const existingScoreId = existingScores[0].id; // Assuming 'id' is the primary key
+            const { data, error } = await supabase
+                .from('scores')
+                .update({ score: score })
+                .eq('id', existingScoreId);
+        } else {
+            // Username does not exist, insert new score
+            console.log("saveScore",playerName)
+            const { data, error } = await supabase
+                .from('scores')
+                .insert([{ player_name: playerName, score: score }]);
+        }
     }
 
-    function getHighScores() {
-        fetch('http://localhost:3000/high_scores')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            // Update your UI with the high scores
-        })
-        .catch(error => console.error('Error:', error));
+    async function getHighScores() {
+        const { data, error } = await supabase
+            .from('scores')
+            .select('*')
+            .order("score",{ascending:false})
+            .limit(5)
+
+        if (error) {
+            console.error('Error fetching scores:', error);
+            alert('Failed to fetch scores. Please try again later.');
+        } else {
+            const scoreList = document.getElementById('score-list');
+            scoreList.innerHTML = '';
+            data.forEach(score => {
+                const li = document.createElement('li');
+                li.textContent = `${score.player_name}: ${score.score}`;
+                scoreList.appendChild(li);
+            });
+        }  
     }
 })
