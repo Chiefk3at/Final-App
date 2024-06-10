@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Trivia</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <div id="signin-container" class="container">
+        <h1>Sign In</h1>
+        <form id="signin-form">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="text" id="player-name" placeholder="Player Name" required>
+            <button type="submit" class="btn">Sign In</button>
+        </form>
+    </div>
+    
+    <div id="quiz-container" class="container hide">
+        <button id="signout-btn" class="signout-btn btn hide">Sign Out</button>
+        <h1>Sports Trivia</h1>
+        <div id="life-counter">❤️❤️❤️</div>
+        <div id="question-container" class="hide">
+            <div id="timer">Time: 60</div>
+            <div id="question">Question text</div>
+            <div id="answer-buttons" class="btn-container"></div>
+        </div>
+        <button id="start-btn" class="start-btn btn">Start</button>
+        <button id="next-btn" class="next-btn btn hide">Next</button>
+    </div>
+
+    <div id="final-score-container" class="container hide">
+        <h1>Final Score</h1>
+        <div id="final-score"></div>
+        <button id="restart-btn" class="btn">Restart</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
